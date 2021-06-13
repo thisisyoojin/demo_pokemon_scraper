@@ -1,7 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
 from selenium.common.exceptions import NoSuchElementException
+import logging
 import json
+
+
+logging.basicConfig(filename='scraping_error.log', encoding='utf-8', level=logging.DEBUG)
 
 class PokemonScraper:
     """
@@ -20,6 +24,17 @@ class PokemonScraper:
         self.ROOT_DOMAIN = "https://www.pokemon.com/us/pokedex"
         self.idx = idx
         self.pokedex = {}
-        pk = Pokemon(**{'id':'#001'})
+
         
         
+    def exec_func(func):
+        """
+        The decorator function to catch possible errors when reading each attribute
+        """
+        def wrapper(self):
+            try:
+                func(self)
+            except Exception as e:
+                logging.error(e)
+        return wrapper
+
